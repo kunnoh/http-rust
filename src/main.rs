@@ -7,11 +7,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     info!("Server starting!");
     let listener = TcpListener::bind("127.0.0.1:4221").unwrap();
-    info!("Server listening on: http://{}", listener.local_addr()?);
+    info!("Server started at: http://{}", listener.local_addr()?);
 
-    for stream in listener.incoming() {
-        match stream {
-            Ok(mut stream) => {
+    for tcp_stream in listener.incoming() {
+        match tcp_stream {
+            Ok(stream) => {
                 debug!("Accepted new connection:: {}", stream.peer_addr()?);
             }
             Err(e) => error!("Err: \n{e}")
