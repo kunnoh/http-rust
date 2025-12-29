@@ -7,8 +7,9 @@ const ERROR_RESPONSE: &[u8] = b"HTTP/1.1 404 Not Found\r\n\r\n";
 
 fn handle_connection(stream: &mut TcpStream) -> Result<()> {
     debug!("Accepted new connection: {}", stream.peer_addr()?);
-    let mut request_buffer = BufReader::new(&*stream);
-    let mut request_line = String::new();
+
+    let mut request_buffer: BufReader<&TcpStream> = BufReader::new(&*stream);
+    let mut request_line: String = String::new();
     request_buffer.read_line(&mut request_line)?;
 
     // Split by space. Second field is path
@@ -33,6 +34,7 @@ fn handle_connection(stream: &mut TcpStream) -> Result<()> {
 
     stream.flush()
 }
+
 fn main() -> Result<()> {
     env_logger:: init();
 
