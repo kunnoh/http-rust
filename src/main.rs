@@ -19,16 +19,23 @@ fn handle_connection(stream: &mut TcpStream) -> Result<()> {
         ["GET", path, "HTTP/1.1"] => {
             info!("GET {path}");
             if *path == "/" {
-                stream.write(SUCCESS_RESPONSE)?;
+                let body:String  = format!("Welcome!\nPath {}", path);
+                let response: String = format!(
+                    "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}", 
+                    body.len(), 
+                    body
+                );
+                stream.write(response.as_bytes())?;
                 stream.flush()
             } else if path.starts_with("/echo/") {
                 let echo_path: Option<(&str, &str)> = path.split_once("/echo");
                 match echo_path {
                     Some((_, path)) => {
+                        let body:String  = format!("Welcome!\nPath /echo{}", path);
                         let response: String = format!(
                             "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}", 
-                            path.len(), 
-                            path
+                            body.len(), 
+                            body
                         );
                         
                         stream.write(response.as_bytes());
