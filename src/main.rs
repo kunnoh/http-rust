@@ -27,7 +27,7 @@ fn handle_connection(stream: &mut TcpStream) -> Result<()> {
                 );
                 stream.write(response.as_bytes())?;
                 stream.flush()
-            } else if path.starts_with("/echo/") {
+            } else if path.starts_with("/echo") {
                 let echo_path: Option<(&str, &str)> = path.split_once("/echo");
                 match echo_path {
                     Some((_, path)) => {
@@ -49,10 +49,11 @@ fn handle_connection(stream: &mut TcpStream) -> Result<()> {
                 }
             } else {
                 warn!("GET {path}");
+                let body:String  = format!("{path} not found");
                 let response: String = format!(
                     "HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}", 
-                    path.len(), 
-                    path
+                    body.len(), 
+                    body
                 );
                 stream.write(response.as_bytes())?;
                 stream.flush()
